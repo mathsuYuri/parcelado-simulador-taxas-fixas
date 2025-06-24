@@ -66,11 +66,11 @@ const InstallmentTable: React.FC<InstallmentTableProps> = ({ amount, rates }) =>
                 </td>
               </tr>
 
-              {/* Parcelado */}
+              {/* Parcelado - começando em 1x */}
               {rates.slice(1).map((rate, index) => {
-                const installments = index + 2; // Começa em 2x
-                const installmentValue = calculateInstallment(amount, installments, rate);
-                const total = installmentValue * installments;
+                const installments = index + 1; // Começa em 1x
+                const totalWithTax = amount * (1 + rate / 100);
+                const installmentValue = totalWithTax / installments;
                 
                 return (
                   <tr 
@@ -93,7 +93,7 @@ const InstallmentTable: React.FC<InstallmentTableProps> = ({ amount, rates }) =>
                       {formatCurrency(installmentValue)}
                     </td>
                     <td className="p-4 text-right font-bold text-lg text-gray-800">
-                      {formatCurrency(total)}
+                      {formatCurrency(totalWithTax)}
                     </td>
                   </tr>
                 );
