@@ -10,11 +10,6 @@ interface InstallmentTableProps {
 }
 
 const InstallmentTable: React.FC<InstallmentTableProps> = ({ amount, rates }) => {
-  const calculateInstallment = (amount: number, installments: number, rate: number) => {
-    const totalWithFees = amount * (1 + rate / 100);
-    return totalWithFees / installments;
-  };
-
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', {
       style: 'currency',
@@ -59,18 +54,18 @@ const InstallmentTable: React.FC<InstallmentTableProps> = ({ amount, rates }) =>
                   {rates[0]}%
                 </td>
                 <td className="p-4 text-right font-bold text-lg text-gray-800">
-                  {formatCurrency(amount * (1 + rates[0] / 100))}
+                  {formatCurrency(amount / (1 - rates[0] / 100))}
                 </td>
                 <td className="p-4 text-right font-bold text-lg text-gray-800">
-                  {formatCurrency(amount * (1 + rates[0] / 100))}
+                  {formatCurrency(amount / (1 - rates[0] / 100))}
                 </td>
               </tr>
 
               {/* Parcelado - começando em 1x */}
               {rates.slice(1).map((rate, index) => {
                 const installments = index + 1; // Começa em 1x
-                const totalWithTax = amount * (1 + rate / 100);
-                const installmentValue = totalWithTax / installments;
+                const valorParaCliente = amount / (1 - rate / 100);
+                const installmentValue = valorParaCliente / installments;
                 
                 return (
                   <tr 
@@ -93,7 +88,7 @@ const InstallmentTable: React.FC<InstallmentTableProps> = ({ amount, rates }) =>
                       {formatCurrency(installmentValue)}
                     </td>
                     <td className="p-4 text-right font-bold text-lg text-gray-800">
-                      {formatCurrency(totalWithTax)}
+                      {formatCurrency(valorParaCliente)}
                     </td>
                   </tr>
                 );
